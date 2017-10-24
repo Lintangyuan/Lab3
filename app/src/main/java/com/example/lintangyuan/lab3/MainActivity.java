@@ -1,77 +1,66 @@
 package com.example.lintangyuan.lab3;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-//import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
-import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
-import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecycleView;
     private CommonAdapter commonAdapter;
     private SimpleAdapter simpleAdapter;
+
     //商品信息;
     String[] _products = {"Enchated Forest", "Arla Milk", "Devondale Milk", "Kindle Oasis", "waitrose 早餐麦片",
     "Mcvitie's 饼干", "Ferrero Rocher", "Maltesers", "Lindt", "Borggreve"};
-    List<String> products = Arrays.asList(_products);
+    List<String> products = new ArrayList<>(Arrays.asList(_products));
+
     String[] _price = {"¥ 5.00", "¥ 59.00", "¥ 79.00", "¥ 2399.00", "¥ 179.00", "¥ 14.90", "¥ 132.59", "¥ 141.43",
     "¥ 139.43", "¥ 28.90"};
-    List<String> price = Arrays.asList(_price);
+    List<String> price = new ArrayList<>(Arrays.asList(_price));
+
+    Integer[] _index = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    List<Integer> index = new ArrayList<>(Arrays.asList(_index));
+
     String[] _detail = {"作者    Johanna Basford", "产地    德国", "产地    澳大利亚", "版本    8GB", "重量    2Kg",
     "产地    英国", "重量    300g", "重量    118g", "重量    249g", "重量    640g"};
-     List<String> detail = Arrays.asList(_detail);
+     List<String> detail = new ArrayList<>(Arrays.asList(_detail));
+
     Integer[] _image = {R.mipmap.enchatedforest, R.mipmap.arla, R.mipmap.devondale, R.mipmap.kindle, R.mipmap.waitrose,
     R.mipmap.mcvitie, R.mipmap.ferrero, R.mipmap.maltesers, R.mipmap.lindt, R.mipmap.borggreve};
-    List<Integer> image = Arrays.asList(_image);
+    List<Integer> image = new ArrayList<>(Arrays.asList(_image));
 
    FloatingActionButton floatingActionButton;
     
     ListView listView;
     List<Map<String, Object>> datas = new ArrayList<>();
-//    String[] goods_name = new String[] {"购物车"};
-//    String[] goods_price = new String[] {"价格"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_main);
+
+        //商品列表RecycleView;
         mRecycleView = (RecyclerView) findViewById(R.id.recycleview);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-//        mRecycleView.setAdapter(commonAdapter);
-        ScaleInAnimationAdapter animationAdapter = new ScaleInAnimationAdapter(commonAdapter);
-        animationAdapter.setDuration(1000);
-//        mRecycleView.setAdapter(animationAdapter);
-//        mRecycleView.setItemAnimator(new OvershootInLeftAnimator());
         commonAdapter = new CommonAdapter(this, R.layout.item, products) {
             @Override
             public void convert(ViewHolder holder, String s) {
@@ -83,10 +72,16 @@ public class MainActivity extends AppCompatActivity {
         };
         mRecycleView.setAdapter(commonAdapter);
 
+//        ScaleInAnimationAdapter animationAdapter = new ScaleInAnimationAdapter(commonAdapter);
+//        animationAdapter.setDuration(1000);
+//        mRecycleView.setAdapter(animationAdapter);
+//        mRecycleView.setItemAnimator(new OvershootInLeftAnimator());
+
         Map<String, Object> temp = new LinkedHashMap<>();
         temp.put("goods_alif", "*");
         temp.put("goods_name", "购物车");
         temp.put("goods_price", "价格");
+        temp.put("goods_index", "");
         datas.add(temp);
 
         listView = (ListView) findViewById(R.id.listView);
@@ -118,36 +113,51 @@ public class MainActivity extends AppCompatActivity {
         //商品列表点击事件;
         commonAdapter.setOnItemClickListener(new CommonAdapter.OnItemClickListener() {
             @Override
-            public void onClick(int position) {
+            public void onClick(int position) {//点击显示商品详情;
                 Intent intent = new Intent(MainActivity.this, GoodInfo.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("goods_name", products.get(position));
                 bundle.putString("goods_price", price.get(position));
                 bundle.putString("goods_detail", detail.get(position));
                 bundle.putInt("goods_image", image.get(position));
+//                bundle.putInt("goods_index", index.get(position));
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 1);
 
             }
             @Override //长按移除商品;
             public void onLongClick(int position) {
-//                products.remove(position);
-//                price.remove(position);
+                //删除以下四项以同步信息;
+                products.remove(position);
+                price.remove(position);
+                image.remove(position);
+                detail.remove(position);
+                index.remove(position);
 //                commonAdapter.mDatas.remove(position);
-                commonAdapter.notifyItemRemoved(position);
+                commonAdapter.notifyDataSetChanged();
+//                commonAdapter.notifyItemRemoved(position);
                 Toast.makeText(MainActivity.this,"移除第"+position+"个商品",Toast.LENGTH_SHORT).show();
             }
         });
 
-        //删除购物车列表商品对话框;
-
-        //购物车列表点击事件;
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            }
-//
-//        });
+        //点击购物车列表商品显示详情;
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                Intent intent = new Intent(MainActivity.this, GoodInfo.class);
+                Integer position = i;
+//                Integer position = Integer.parseInt(view.findViewById(R.id.forIndex).toString());
+                Bundle bundle = new Bundle();
+                bundle.putString("goods_name", products.get(position));
+                bundle.putString("goods_price", price.get(position));
+                bundle.putString("goods_detail", detail.get(position));
+                bundle.putInt("goods_image", image.get(position));
+//                bundle.putInt("goods_index", index.get(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        //长按删除购物车商品;
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -174,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1) {
             if(resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
@@ -182,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 temp.put("goods_alif", extras.getString("goods_name").substring(0, 1));
                 temp.put("goods_name", extras.getString("goods_name"));
                 temp.put("goods_price", extras.getString("goods_price"));
+//                temp.put("goods_index", extras.getInt("goods_index"));
                 datas.add(temp);
                 simpleAdapter.notifyDataSetChanged();
             }

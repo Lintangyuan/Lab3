@@ -32,6 +32,10 @@ public class GoodInfo extends AppCompatActivity {
     String goods_price = null;
     String goods_detail = null;
     Integer goods_image = null;
+    Integer goods_index = null;
+
+    ImageView star;
+    boolean tag_star = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class GoodInfo extends AppCompatActivity {
             goods_price = extras.getString("goods_price");
             goods_detail = extras.getString("goods_detail");
             goods_image = extras.getInt("goods_image");
+//            goods_index = extras.getInt("goods_index");
         }
 
         //文字处理;
@@ -57,6 +62,8 @@ public class GoodInfo extends AppCompatActivity {
         detail.setText(goods_detail);
         TextView price = (TextView) findViewById(R.id.textView_goodInfo_price);
         price.setText(goods_price);
+        TextView forIndex = (TextView) findViewById(R.id.forIndex);
+//        forIndex.setText(goods_index);
 
         for(int i = 0; i < 4; i++) {
             Map<String, Object> temp = new LinkedHashMap<>();
@@ -79,6 +86,7 @@ public class GoodInfo extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("goods_name", goods_name);
                 bundle.putString("goods_price", goods_price);
+//                bundle.putInt("goods_index", goods_index);
                 intent.putExtras(bundle);
                 if(add == true) setResult(RESULT_OK, intent);
                 else setResult(RESULT_CANCELED, intent);
@@ -95,6 +103,23 @@ public class GoodInfo extends AppCompatActivity {
                 Toast.makeText(GoodInfo.this, "商品已添加到购物车", Toast.LENGTH_SHORT).show();
             }
         });
+
+        //star;
+        star = (ImageView) findViewById(R.id.imageview_star);
+        star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tag_star) {
+                    star.setImageResource(R.mipmap.full_star);
+                    tag_star = false;
+                }
+                else {
+                    star.setImageResource(R.mipmap.empty_star);
+                    tag_star = true;
+                }
+            }
+        });
+
     }
 
 }
