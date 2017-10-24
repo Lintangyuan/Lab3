@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.listView);
         simpleAdapter = new SimpleAdapter(this, datas, R.layout.item,
-                new String[] {"goods_alif", "goods_name", "goods_price"},
-                new int[] {R.id.alif, R.id.textView, R.id.textView_price});
+                new String[] {"goods_alif", "goods_name", "goods_price", "goods_index"},
+                new int[] {R.id.alif, R.id.textView, R.id.textView_price, R.id.forIndex_shoppinglist});
         listView.setAdapter(simpleAdapter);
 
         //切换购物车和商品列表;
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("goods_price", price.get(position));
                 bundle.putString("goods_detail", detail.get(position));
                 bundle.putInt("goods_image", image.get(position));
-//                bundle.putInt("goods_index", index.get(position));
+                bundle.putInt("goods_index", index.get(position));
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 1);
 
@@ -145,14 +145,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 Intent intent = new Intent(MainActivity.this, GoodInfo.class);
-                Integer position = i;
-//                Integer position = Integer.parseInt(view.findViewById(R.id.forIndex).toString());
+                TextView textView_index = (TextView) view.findViewById(R.id.forIndex_shoppinglist);
+                Integer position = Integer.parseInt(textView_index.getText().toString());
                 Bundle bundle = new Bundle();
                 bundle.putString("goods_name", products.get(position));
                 bundle.putString("goods_price", price.get(position));
                 bundle.putString("goods_detail", detail.get(position));
                 bundle.putInt("goods_image", image.get(position));
-//                bundle.putInt("goods_index", index.get(position));
+                bundle.putInt("goods_index", index.get(position));
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 temp.put("goods_alif", extras.getString("goods_name").substring(0, 1));
                 temp.put("goods_name", extras.getString("goods_name"));
                 temp.put("goods_price", extras.getString("goods_price"));
-//                temp.put("goods_index", extras.getInt("goods_index"));
+                temp.put("goods_index", extras.getInt("goods_index"));
                 datas.add(temp);
                 simpleAdapter.notifyDataSetChanged();
             }

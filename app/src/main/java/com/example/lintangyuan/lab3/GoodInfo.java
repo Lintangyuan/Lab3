@@ -50,7 +50,7 @@ public class GoodInfo extends AppCompatActivity {
             goods_price = extras.getString("goods_price");
             goods_detail = extras.getString("goods_detail");
             goods_image = extras.getInt("goods_image");
-//            goods_index = extras.getInt("goods_index");
+            goods_index= extras.getInt("goods_index");
         }
 
         //文字处理;
@@ -63,7 +63,7 @@ public class GoodInfo extends AppCompatActivity {
         TextView price = (TextView) findViewById(R.id.textView_goodInfo_price);
         price.setText(goods_price);
         TextView forIndex = (TextView) findViewById(R.id.forIndex);
-//        forIndex.setText(goods_index);
+        forIndex.setText(goods_index.toString());
 
         for(int i = 0; i < 4; i++) {
             Map<String, Object> temp = new LinkedHashMap<>();
@@ -86,7 +86,7 @@ public class GoodInfo extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("goods_name", goods_name);
                 bundle.putString("goods_price", goods_price);
-//                bundle.putInt("goods_index", goods_index);
+                bundle.putInt("goods_index", goods_index);
                 intent.putExtras(bundle);
                 if(add == true) setResult(RESULT_OK, intent);
                 else setResult(RESULT_CANCELED, intent);

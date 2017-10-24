@@ -103,6 +103,12 @@
                     android:layout_centerVertical="true"
                     android:id="@+id/shoplist"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/forIndex"
+                    android:visibility="invisible"/>
+
             </RelativeLayout>
 
             <ImageView
